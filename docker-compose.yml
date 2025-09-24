@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  cansell-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.cansell.rule=Host(`cansell.store`)"
+      - "traefik.http.routers.cansell.entrypoints=websecure"
+      - "traefik.http.routers.cansell.tls.certresolver=letsencrypt"
+      - "traefik.http.services.cansell.loadbalancer.server.port=3000"
+
+  # Development service
+  cansell-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3012:3012"
+    environment:
+      - NODE_ENV=development
+      - PORT=3012
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
+    profiles:
+      - dev
