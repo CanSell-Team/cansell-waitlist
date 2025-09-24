@@ -120,7 +120,7 @@ export default function Home() {
       socialLinks: {
         instagram: "Instagram",
         linkedin: "LinkedIn",
-        email: "Email",
+        telegram: "Telegram",
       },
     },
     fa: {
@@ -135,7 +135,7 @@ export default function Home() {
       socialLinks: {
         instagram: "اینستاگرام",
         linkedin: "لینکدین",
-        email: "ایمیل",
+        telegram: "تلگرام",
       },
     },
   };
@@ -319,7 +319,9 @@ export default function Home() {
                   {language === "en" ? "فا" : "EN"}
                 </button>
                 <a
-                  href="#"
+                  href="https://www.instagram.com/cansell_info/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="backdrop-blur-sm border rounded-lg transition-colors px-3 py-1"
                   style={{
                     backgroundColor: colors.background.card,
@@ -334,7 +336,9 @@ export default function Home() {
                   {currentContent.socialLinks.instagram}
                 </a>
                 <a
-                  href="#"
+                  href="https://www.linkedin.com/company/cansell-info"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="backdrop-blur-sm border rounded-lg transition-colors px-3 py-1"
                   style={{
                     backgroundColor: colors.background.card,
@@ -349,7 +353,9 @@ export default function Home() {
                   {currentContent.socialLinks.linkedin}
                 </a>
                 <a
-                  href="#"
+                  href="https://t.me/cansell_support"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="backdrop-blur-sm border rounded-lg transition-colors px-3 py-1"
                   style={{
                     backgroundColor: colors.background.card,
@@ -361,7 +367,7 @@ export default function Home() {
                     transition: `all ${transition.duration.normal} ${transition.easing.easeInOut}`,
                   }}
                 >
-                  {currentContent.socialLinks.email}
+                  {currentContent.socialLinks.telegram}
                 </a>
               </div>
             </div>
