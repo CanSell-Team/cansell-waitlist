@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useFormStore } from "@/store/useFormStore";
+import { supabase, type ContactSubmission } from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ContactForm() {
   const {
@@ -18,6 +20,7 @@ export default function ContactForm() {
   } = useFormStore();
 
   const [contactType, setContactType] = useState<"email" | "phone">("email");
+  const { toast } = useToast();
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -45,12 +48,43 @@ export default function ContactForm() {
 
     setLoading(true);
 
-    // Simulate API call
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // Prepare data for Supabase
+      const submissionData: Omit<ContactSubmission, "id" | "created_at"> = {
+        name: contactType === "email" ? email : phone, // Using email/phone as name for now
+        message: "User wants to be notified when we're back online",
+        ...(contactType === "email" ? { email } : { phone }),
+      };
+
+      // Insert into Supabase
+      const { error: supabaseError } = await supabase
+        .from("contact_submissions")
+        .insert([submissionData])
+        .select();
+
+      if (supabaseError) {
+        throw supabaseError;
+      }
+
+      // Show success toast
+      toast({
+        title: "Success! 🎉",
+        description:
+          "We've received your contact information and will notify you when we're back online.",
+      });
+
       setSubmitted(true);
-    } catch {
+    } catch (error) {
+      console.error("Error submitting form:", error);
       setError("Something went wrong. Please try again.");
+
+      // Show error toast
+      toast({
+        title: "Error",
+        description:
+          "Failed to submit your contact information. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
