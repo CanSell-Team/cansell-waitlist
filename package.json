@@ -13,7 +13,8 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "zustand": "^5.0.8",
-    "typescript": "^5"
+    "typescript": "^5",
+    "critters": "^0.0.24"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
