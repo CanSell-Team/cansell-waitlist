@@ -120,180 +120,181 @@ export default function Home() {
           className="w-full md:w-1/2 flex flex-col"
           style={{ backgroundColor: colors.background.primary }}
         >
-        {/* Header - Logo */}
-        <header className="flex justify-center items-center pt-8 pb-4 md:pt-12 md:pb-8">
-          <div
-            style={{
-              border: `${borderWidth.normal} solid white`,
-              borderRadius: borderRadius.full,
-              padding: spacing.xs,
-              backgroundColor: colors.background.card,
-            }}
-          >
-            <Image
-              src="/logo.png"
-              alt="CanSell Logo"
-              width={120}
-              height={120}
-              className="object-contain rounded-full md:w-[180px] md:h-[180px]"
-              priority
-            />
-          </div>
-        </header>
-        {/* Main Content - Coming Soon */}
-        <main className="flex-1 flex items-center justify-center p-4 md:p-8">
-          <div className="w-full max-w-md">
-            <h1
-              className="mb-3 md:mb-4 text-center font-bold whitespace-nowrap text-2xl md:text-3xl"
+          {/* Header - Logo */}
+          <header className="flex justify-center items-center pt-8 pb-4 md:pt-12 md:pb-8">
+            <div
               style={{
-                color: colors.text.primary,
-                lineHeight: typography.lineHeight.tight,
+                border: `${borderWidth.normal} solid white`,
+                borderRadius: borderRadius.full,
+                padding: spacing.xs,
+                backgroundColor: colors.background.card,
               }}
             >
-              {currentContent.title}
-            </h1>
-            <p
-              className="mb-6 md:mb-8 text-center text-sm md:text-lg px-4 md:px-0"
-              style={{
-                color: colors.text.secondary,
-                lineHeight: typography.lineHeight.normal,
-              }}
-            >
-              {currentContent.subtitle}
-            </p>
+              <Image
+                src="/logo.png"
+                alt="CanSell Logo"
+                width={120}
+                height={120}
+                className="object-contain rounded-full md:w-[180px] md:h-[180px]"
+                priority
+              />
+            </div>
+          </header>
+          {/* Main Content - Coming Soon */}
+          <main className="flex-1 flex items-center justify-center p-4 md:p-8">
+            <div className="w-full max-w-md">
+              <h1
+                className="mb-3 md:mb-4 text-center font-bold whitespace-nowrap text-2xl md:text-3xl"
+                style={{
+                  color: colors.text.primary,
+                  lineHeight: typography.lineHeight.tight,
+                }}
+              >
+                {currentContent.title}
+              </h1>
+              <p
+                className="mb-6 md:mb-8 text-center text-sm md:text-lg px-4 md:px-0"
+                style={{
+                  color: colors.text.secondary,
+                  lineHeight: typography.lineHeight.normal,
+                }}
+              >
+                {currentContent.subtitle}
+              </p>
 
-            {/* Notification Form */}
-            <div className="space-y-3 md:space-y-4 px-4 md:px-0">
-              {/* Email Notification Form */}
-              <div className="space-y-3">
-                <input
-                  type="text"
-                  placeholder={currentContent.contactPlaceholder}
-                  className="w-full px-3 md:px-4 py-2 md:py-3 backdrop-blur-sm border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm md:text-base"
+              {/* Notification Form */}
+              <div className="space-y-3 md:space-y-4 px-4 md:px-0">
+                {/* Email Notification Form */}
+                <div className="space-y-3">
+                  <input
+                    type="text"
+                    placeholder={currentContent.contactPlaceholder}
+                    className="w-full px-3 md:px-4 py-2 md:py-3 backdrop-blur-sm border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm md:text-base"
+                    style={{
+                      backgroundColor: colors.background.card,
+                      borderColor: colors.background.cardBorder,
+                      color: colors.text.primary,
+                      borderRadius: borderRadius.lg,
+                      transition: `all ${transition.duration.normal} ${transition.easing.easeInOut}`,
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = colors.brand.primary;
+                      e.target.style.boxShadow = `0 0 0 2px ${colors.brand.accent}`;
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = colors.background.cardBorder;
+                      e.target.style.boxShadow = "none";
+                    }}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Smart validation: detect if it's email or phone
+                      const isEmail =
+                        value.includes("@") && value.includes(".");
+                      const isPhone = /^[\+]?[0-9\s\-\(\)]{10,}$/.test(
+                        value.replace(/\s/g, "")
+                      );
+
+                      if (isEmail) {
+                        e.target.type = "email";
+                      } else if (isPhone) {
+                        e.target.type = "tel";
+                      } else {
+                        e.target.type = "text";
+                      }
+                    }}
+                  />
+                  <button
+                    className="w-full px-3 md:px-4 py-2 md:py-3 text-white font-medium rounded-lg transition-colors text-sm md:text-base"
+                    style={{
+                      backgroundColor: colors.brand.primary,
+                      fontWeight: typography.fontWeight.medium,
+                      borderRadius: borderRadius.lg,
+                      transition: `all ${transition.duration.normal} ${transition.easing.easeInOut}`,
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor =
+                        colors.brand.primaryHover;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor =
+                        colors.brand.primary;
+                    }}
+                  >
+                    {currentContent.buttonText}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </main>
+
+          {/* Footer */}
+          <footer className="py-4 md:py-6">
+            <div className="text-center">
+              <div className="flex justify-center items-center space-x-4 md:space-x-6">
+                {/* Language Toggle */}
+                <button
+                  onClick={toggleLanguage}
+                  className="backdrop-blur-sm border rounded-lg transition-colors px-3 py-1"
                   style={{
                     backgroundColor: colors.background.card,
                     borderColor: colors.background.cardBorder,
-                    color: colors.text.primary,
-                    borderRadius: borderRadius.lg,
-                    transition: `all ${transition.duration.normal} ${transition.easing.easeInOut}`,
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = colors.brand.primary;
-                    e.target.style.boxShadow = `0 0 0 2px ${colors.brand.accent}`;
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = colors.background.cardBorder;
-                    e.target.style.boxShadow = "none";
-                  }}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    // Smart validation: detect if it's email or phone
-                    const isEmail = value.includes("@") && value.includes(".");
-                    const isPhone = /^[\+]?[0-9\s\-\(\)]{10,}$/.test(
-                      value.replace(/\s/g, "")
-                    );
-
-                    if (isEmail) {
-                      e.target.type = "email";
-                    } else if (isPhone) {
-                      e.target.type = "tel";
-                    } else {
-                      e.target.type = "text";
-                    }
-                  }}
-                />
-                <button
-                  className="w-full px-3 md:px-4 py-2 md:py-3 text-white font-medium rounded-lg transition-colors text-sm md:text-base"
-                  style={{
-                    backgroundColor: colors.brand.primary,
+                    color: colors.text.secondary,
+                    fontSize: typography.fontSize.sm,
                     fontWeight: typography.fontWeight.medium,
                     borderRadius: borderRadius.lg,
                     transition: `all ${transition.duration.normal} ${transition.easing.easeInOut}`,
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor =
-                      colors.brand.primaryHover;
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor =
-                      colors.brand.primary;
+                >
+                  {language === "en" ? "فا" : "EN"}
+                </button>
+                <a
+                  href="#"
+                  className="backdrop-blur-sm border rounded-lg transition-colors px-3 py-1"
+                  style={{
+                    backgroundColor: colors.background.card,
+                    borderColor: colors.background.cardBorder,
+                    color: colors.text.secondary,
+                    fontSize: typography.fontSize.sm,
+                    fontWeight: typography.fontWeight.medium,
+                    borderRadius: borderRadius.lg,
+                    transition: `all ${transition.duration.normal} ${transition.easing.easeInOut}`,
                   }}
                 >
-                  {currentContent.buttonText}
-                </button>
+                  {currentContent.socialLinks.instagram}
+                </a>
+                <a
+                  href="#"
+                  className="backdrop-blur-sm border rounded-lg transition-colors px-3 py-1"
+                  style={{
+                    backgroundColor: colors.background.card,
+                    borderColor: colors.background.cardBorder,
+                    color: colors.text.secondary,
+                    fontSize: typography.fontSize.sm,
+                    fontWeight: typography.fontWeight.medium,
+                    borderRadius: borderRadius.lg,
+                    transition: `all ${transition.duration.normal} ${transition.easing.easeInOut}`,
+                  }}
+                >
+                  {currentContent.socialLinks.linkedin}
+                </a>
+                <a
+                  href="#"
+                  className="backdrop-blur-sm border rounded-lg transition-colors px-3 py-1"
+                  style={{
+                    backgroundColor: colors.background.card,
+                    borderColor: colors.background.cardBorder,
+                    color: colors.text.secondary,
+                    fontSize: typography.fontSize.sm,
+                    fontWeight: typography.fontWeight.medium,
+                    borderRadius: borderRadius.lg,
+                    transition: `all ${transition.duration.normal} ${transition.easing.easeInOut}`,
+                  }}
+                >
+                  {currentContent.socialLinks.email}
+                </a>
               </div>
             </div>
-          </div>
-        </main>
-
-        {/* Footer */}
-        <footer className="py-4 md:py-6">
-          <div className="text-center">
-            <div className="flex justify-center items-center space-x-4 md:space-x-6">
-              {/* Language Toggle */}
-              <button
-                onClick={toggleLanguage}
-                className="backdrop-blur-sm border rounded-lg transition-colors px-3 py-1"
-                style={{
-                  backgroundColor: colors.background.card,
-                  borderColor: colors.background.cardBorder,
-                  color: colors.text.secondary,
-                  fontSize: typography.fontSize.sm,
-                  fontWeight: typography.fontWeight.medium,
-                  borderRadius: borderRadius.lg,
-                  transition: `all ${transition.duration.normal} ${transition.easing.easeInOut}`,
-                }}
-              >
-                {language === "en" ? "فا" : "EN"}
-              </button>
-              <a
-                href="#"
-                className="backdrop-blur-sm border rounded-lg transition-colors px-3 py-1"
-                style={{
-                  backgroundColor: colors.background.card,
-                  borderColor: colors.background.cardBorder,
-                  color: colors.text.secondary,
-                  fontSize: typography.fontSize.sm,
-                  fontWeight: typography.fontWeight.medium,
-                  borderRadius: borderRadius.lg,
-                  transition: `all ${transition.duration.normal} ${transition.easing.easeInOut}`,
-                }}
-              >
-                {currentContent.socialLinks.instagram}
-              </a>
-              <a
-                href="#"
-                className="backdrop-blur-sm border rounded-lg transition-colors px-3 py-1"
-                style={{
-                  backgroundColor: colors.background.card,
-                  borderColor: colors.background.cardBorder,
-                  color: colors.text.secondary,
-                  fontSize: typography.fontSize.sm,
-                  fontWeight: typography.fontWeight.medium,
-                  borderRadius: borderRadius.lg,
-                  transition: `all ${transition.duration.normal} ${transition.easing.easeInOut}`,
-                }}
-              >
-                {currentContent.socialLinks.linkedin}
-              </a>
-              <a
-                href="#"
-                className="backdrop-blur-sm border rounded-lg transition-colors px-3 py-1"
-                style={{
-                  backgroundColor: colors.background.card,
-                  borderColor: colors.background.cardBorder,
-                  color: colors.text.secondary,
-                  fontSize: typography.fontSize.sm,
-                  fontWeight: typography.fontWeight.medium,
-                  borderRadius: borderRadius.lg,
-                  transition: `all ${transition.duration.normal} ${transition.easing.easeInOut}`,
-                }}
-              >
-                {currentContent.socialLinks.email}
-              </a>
-            </div>
-          </div>
-        </footer>
+          </footer>
         </div>
       </div>
     </div>
