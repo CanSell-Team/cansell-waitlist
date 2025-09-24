@@ -15,7 +15,7 @@ export default function LanguageToggle() {
   return (
     <button
       onClick={toggleLanguage}
-      className="fixed bottom-32 left-1/2 transform -translate-x-1/2 backdrop-blur-sm border rounded-lg transition-colors"
+      className="absolute bottom-4 left-1/2 transform -translate-x-1/2 backdrop-blur-sm border rounded-lg transition-colors"
       style={{
         backgroundColor: colors.background.card,
         borderColor: colors.background.cardBorder,

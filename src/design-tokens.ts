@@ -160,12 +160,12 @@ export const getCSSVariables = () => {
   const cssVars: Record<string, string> = {};
 
   // Flatten nested objects and create CSS custom properties
-  const flattenObject = (obj: any, prefix = "--") => {
+  const flattenObject = (obj: Record<string, unknown>, prefix = "--") => {
     for (const key in obj) {
       if (typeof obj[key] === "object" && obj[key] !== null) {
-        flattenObject(obj[key], `${prefix}${key}-`);
+        flattenObject(obj[key] as Record<string, unknown>, `${prefix}${key}-`);
       } else {
-        cssVars[`${prefix}${key}`] = obj[key];
+        cssVars[`${prefix}${key}`] = String(obj[key]);
       }
     }
   };

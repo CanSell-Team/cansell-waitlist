@@ -49,7 +49,7 @@ export default function ContactForm() {
     try {
       await new Promise((resolve) => setTimeout(resolve, 2000));
       setSubmitted(true);
-    } catch (err) {
+    } catch {
       setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
@@ -76,8 +76,8 @@ export default function ContactForm() {
         </div>
         <h3 className="text-lg font-semibold text-gray-900 mb-2">Thank you!</h3>
         <p className="text-gray-600">
-          We've received your contact information and will notify you when we're
-          back online.
+          We&apos;ve received your contact information and will notify you when
+          we&apos;re back online.
         </p>
         <button
           onClick={() => useFormStore.getState().resetForm()}
