@@ -34,7 +34,31 @@ export default function ContactForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Form submitted!", { contactType, email, phone });
     setError(null);
+
+    // Test Supabase connection first
+    try {
+      console.log("Testing Supabase connection...");
+      const { data: testData, error: testError } = await supabase
+        .from("contact_submissions")
+        .select("count")
+        .limit(1);
+
+      console.log("Supabase connection test:", { testData, testError });
+
+      if (testError) {
+        console.error("Supabase connection failed:", testError);
+        setError(`Database connection failed: ${testError.message}`);
+        return;
+      }
+    } catch (connectionError) {
+      console.error("Supabase connection error:", connectionError);
+      setError(
+        "Unable to connect to database. Please check your internet connection."
+      );
+      return;
+    }
 
     if (contactType === "email" && !validateEmail(email)) {
       setError("Please enter a valid email address");
@@ -56,13 +80,18 @@ export default function ContactForm() {
         ...(contactType === "email" ? { email } : { phone }),
       };
 
+      console.log("Submitting to Supabase:", submissionData);
+
       // Insert into Supabase
-      const { error: supabaseError } = await supabase
+      const { data, error: supabaseError } = await supabase
         .from("contact_submissions")
         .insert([submissionData])
         .select();
 
+      console.log("Supabase response:", { data, error: supabaseError });
+
       if (supabaseError) {
+        console.error("Supabase error:", supabaseError);
         throw supabaseError;
       }
 
@@ -169,7 +198,7 @@ export default function ContactForm() {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-left"
               placeholder="your@email.com"
               required
             />
@@ -187,7 +216,7 @@ export default function ContactForm() {
               id="phone"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-left"
               placeholder="+1 (555) 123-4567"
               required
             />
@@ -201,9 +230,34 @@ export default function ContactForm() {
         </div>
       )}
 
+      {/* Debug button to test form functionality */}
+      <button
+        type="button"
+        onClick={() => {
+          console.log("Debug button clicked!");
+          toast({
+            title: "Debug Test",
+            description:
+              "Toast is working! Form state: " +
+              JSON.stringify({ contactType, email, phone, isLoading }),
+          });
+        }}
+        className="w-full bg-gray-500 text-white py-2 px-4 rounded-lg font-medium hover:bg-gray-600 mb-2"
+      >
+        🐛 Test Toast & Debug
+      </button>
+
       <button
         type="submit"
         disabled={isLoading || (contactType === "email" ? !email : !phone)}
+        onClick={() =>
+          console.log("Button clicked!", {
+            isLoading,
+            contactType,
+            email,
+            phone,
+          })
+        }
         className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         {isLoading ? (

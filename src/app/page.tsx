@@ -11,9 +11,14 @@ import {
   borderWidth,
   transition,
 } from "@/design-tokens";
+import { useToast } from "@/hooks/use-toast";
+import { supabase, type ContactSubmission } from "@/lib/supabase";
 
 export default function Home() {
   const { language, isRTL, toggleLanguage } = useLanguage();
+  const { toast } = useToast();
+  const [contactValue, setContactValue] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Image carousel state
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -32,6 +37,74 @@ export default function Home() {
 
     return () => clearInterval(interval);
   }, [images.length]);
+
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePhone = (phone: string) => {
+    const phoneRegex = /^[\+]?\d[\d\s\-()]{9,}$/;
+    return phoneRegex.test(phone.replace(/[\s\-()]/g, ""));
+  };
+
+  const handleNotify = async () => {
+    const value = contactValue.trim();
+    if (!value) return;
+
+    const isEmail = validateEmail(value);
+    const isPhone = validatePhone(value);
+
+    if (!isEmail && !isPhone) {
+      toast({
+        title: language === "fa" ? "خطا" : "Error",
+        description:
+          language === "fa"
+            ? "لطفاً ایمیل یا شماره تلفن معتبر وارد کنید."
+            : "Please enter a valid email address or phone number.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const submissionData: Omit<ContactSubmission, "id" | "created_at"> = {
+        name: value,
+        message:
+          language === "fa"
+            ? "کاربر می‌خواهد هنگام بازگشت ما مطلع شود"
+            : "User wants to be notified when we're back online",
+        ...(isEmail ? { email: value } : { phone: value }),
+      };
+
+      const { error } = await supabase
+        .from("contact_submissions")
+        .insert([submissionData]);
+
+      if (error) throw error;
+
+      toast({
+        title: language === "fa" ? "موفق! 🎉" : "Success! 🎉",
+        description:
+          language === "fa"
+            ? "اطلاعات شما ثبت شد. هنگام بازگشت به شما خبر می‌دهیم."
+            : "We've received your contact and will notify you when we're back.",
+      });
+      setContactValue("");
+    } catch (err) {
+      toast({
+        title: language === "fa" ? "خطا" : "Error",
+        description:
+          language === "fa"
+            ? "ارسال اطلاعات با مشکل مواجه شد. دوباره تلاش کنید."
+            : "Failed to submit your contact information. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const content = {
     en: {
@@ -169,14 +242,19 @@ export default function Home() {
                   <input
                     type="text"
                     placeholder={currentContent.contactPlaceholder}
-                    className="w-full px-3 md:px-4 py-2 md:py-3 backdrop-blur-sm border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm md:text-base"
+                    className="w-full px-3 md:px-4 py-2 md:py-3 backdrop-blur-sm border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm md:text-base text-left"
                     style={{
                       backgroundColor: colors.background.card,
                       borderColor: colors.background.cardBorder,
                       color: colors.text.primary,
                       borderRadius: borderRadius.lg,
                       transition: `all ${transition.duration.normal} ${transition.easing.easeInOut}`,
+                      direction: "ltr",
                     }}
+                    dir="ltr"
+                    inputMode="email"
+                    autoComplete="email"
+                    value={contactValue}
                     onFocus={(e) => {
                       e.target.style.borderColor = colors.brand.primary;
                       e.target.style.boxShadow = `0 0 0 2px ${colors.brand.accent}`;
@@ -187,20 +265,7 @@ export default function Home() {
                     }}
                     onChange={(e) => {
                       const value = e.target.value;
-                      // Smart validation: detect if it's email or phone
-                      const isEmail =
-                        value.includes("@") && value.includes(".");
-                      const isPhone = /^[\+]?[0-9\s\-\(\)]{10,}$/.test(
-                        value.replace(/\s/g, "")
-                      );
-
-                      if (isEmail) {
-                        e.target.type = "email";
-                      } else if (isPhone) {
-                        e.target.type = "tel";
-                      } else {
-                        e.target.type = "text";
-                      }
+                      setContactValue(value);
                     }}
                   />
                   <button
@@ -211,6 +276,8 @@ export default function Home() {
                       borderRadius: borderRadius.lg,
                       transition: `all ${transition.duration.normal} ${transition.easing.easeInOut}`,
                     }}
+                    onClick={handleNotify}
+                    disabled={!contactValue || isSubmitting}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.backgroundColor =
                         colors.brand.primaryHover;
@@ -220,7 +287,11 @@ export default function Home() {
                         colors.brand.primary;
                     }}
                   >
-                    {currentContent.buttonText}
+                    {isSubmitting
+                      ? language === "fa"
+                        ? "در حال ارسال..."
+                        : "Submitting..."
+                      : currentContent.buttonText}
                   </button>
                 </div>
               </div>

@@ -7,11 +7,11 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+    env_file:
+      - ./.env
     environment:
       - NODE_ENV=production
       - PORT=3000
-      - NEXT_PUBLIC_SUPABASE_URL=https://qbbkhmneutnvirobtyfn.supabase.co
-      - NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiYmtobW5ldXRudmlyb2J0eWZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NzM3MTMsImV4cCI6MjA3NDI0OTcxM30.d366HsawABqpFgVss-eTFdZtykbaK539_C8h9_99eH8
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
@@ -33,6 +33,8 @@ services:
       dockerfile: Dockerfile.dev
     ports:
       - "3012:3012"
+    env_file:
+      - ./.env.local
     environment:
       - NODE_ENV=development
       - PORT=3012
