@@ -4,6 +4,7 @@ import "./globals.css";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { Toaster } from "@/components/ui/toaster";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -130,7 +131,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${vazirmatn.variable} antialiased`}
         suppressHydrationWarning={true}
       >
-        <LanguageProvider>{children}</LanguageProvider>
+        <LanguageProvider>
+          {children}
+          <SpeedInsights />
+        </LanguageProvider>
         <Toaster />
         <Analytics />
       </body>
