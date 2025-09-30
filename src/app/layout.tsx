@@ -115,8 +115,32 @@ export default function RootLayout({
   return (
     <html lang="fa" dir="rtl">
       <head>
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/logo.png" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link
+          rel="icon"
+          href="/favicon-16x16.png"
+          sizes="16x16"
+          type="image/png"
+        />
+        <link
+          rel="icon"
+          href="/favicon-32x32.png"
+          sizes="32x32"
+          type="image/png"
+        />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link
+          rel="icon"
+          href="/favicon-192x192.png"
+          sizes="192x192"
+          type="image/png"
+        />
+        <link
+          rel="icon"
+          href="/favicon-512x512.png"
+          sizes="512x512"
+          type="image/png"
+        />
         <meta name="theme-color" content="#22C55E" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="mobile-web-app-capable" content="yes" />
